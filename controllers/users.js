@@ -1,4 +1,4 @@
-import { response } from "express";
+import { request, response } from "express";
 
 //GET request controller
 export const usersGet = (req, res = response) => {
@@ -8,9 +8,14 @@ export const usersGet = (req, res = response) => {
 }
 
 //POST request controller
-export const usersPost = (req, res = response) => {
+export const usersPost = (req = request, res = response) => {
+
+    const { name, age } = req.body;
+
     res.json({
-        msg: 'POST request - controller'
+        msg: 'POST request - controller',
+        name,
+        age
     });
 }
 
