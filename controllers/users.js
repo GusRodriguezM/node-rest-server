@@ -1,9 +1,17 @@
 import { request, response } from "express";
 
 //GET request controller
-export const usersGet = (req, res = response) => {
+export const usersGet = (req = request, res = response) => {
+
+    const { q, name = 'no name', apikey, page = 1, limit } = req.query;
+
     res.json({
-        msg: 'GET request - controller'
+        msg: 'GET request - controller',
+        q,
+        name,
+        apikey,
+        page,
+        limit
     });
 }
 
@@ -20,9 +28,13 @@ export const usersPost = (req = request, res = response) => {
 }
 
 //PUT request controller
-export const usersPut = (req, res = response) => {
+export const usersPut = (req = request, res = response) => {
+
+    const { id } = req.params;
+
     res.json({
-        msg: 'PUT request - controller'
+        msg: 'PUT request - controller',
+        id
     });
 }
 

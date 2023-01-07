@@ -10,7 +10,7 @@ router.get( '/', usersGet );
 router.post( '/', usersPost );
 
 //PUT request
-router.put( '/', usersPut );
+router.put( '/:id', usersPut );
 
 //DELETE request
 router.delete( '/', usersDelete );
