@@ -1,4 +1,6 @@
 import { request, response } from "express";
+import bcrypt from 'bcryptjs';
+
 import User from '../models/user.js';
 
 //GET request controller
@@ -19,10 +21,22 @@ export const usersGet = (req = request, res = response) => {
 //POST API controller
 export const usersPost = async(req = request, res = response) => {
 
-    const body = req.body;
+    const { name, email, password, role } = req.body;
 
     //Creating an instance of User
-    const user  = new User( body );
+    const user  = new User({ name, email, password, role });
+
+    //Verify if the email exists and if its valid
+    const emailExists = await User.findOne({ email });
+    if( emailExists ){
+        return res.status(400).json({
+            msg: 'The email is already registered'
+        });
+    }
+
+    //Encrypt the password
+    const salt = bcrypt.genSaltSync();
+    user.password = bcrypt.hashSync( password, salt );
 
     //Saving the user into the DB
     await user.save();
