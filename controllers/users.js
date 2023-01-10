@@ -1,4 +1,5 @@
 import { request, response } from "express";
+import User from '../models/user.js';
 
 //GET request controller
 export const usersGet = (req = request, res = response) => {
@@ -15,15 +16,20 @@ export const usersGet = (req = request, res = response) => {
     });
 }
 
-//POST request controller
-export const usersPost = (req = request, res = response) => {
+//POST API controller
+export const usersPost = async(req = request, res = response) => {
 
-    const { name, age } = req.body;
+    const body = req.body;
+
+    //Creating an instance of User
+    const user  = new User( body );
+
+    //Saving the user into the DB
+    await user.save();
 
     res.json({
         msg: 'POST request - controller',
-        name,
-        age
+        user
     });
 }
 
