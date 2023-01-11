@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 
 import { usersDelete, usersGet, usersPatch, usersPost, usersPut } from "../controllers/users.js";
 import { validateFields } from "../middlewares/fields-validator.js";
+import { isValidEmail, isValidRole } from "../helpers/db-validators.js";
 
 export const router = Router();
 
@@ -13,8 +14,9 @@ router.get( '/', usersGet );
 router.post( '/', [
     body( 'name', 'The name is required' ).not().isEmpty(),
     body( 'email', 'The email is not valid' ).isEmail(),
+    body( 'email', 'The email is not valid' ).custom( isValidEmail ),
     body( 'password', 'The password should be at least 6 characters long').isLength({ min: 6 }),
-    body( 'role', 'Is not a valid role' ).isIn( [ 'ADMIN_ROLE', 'USER_ROLE' ] ),
+    body( 'role' ).custom( isValidRole ),
     validateFields
 ], usersPost );
 

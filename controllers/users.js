@@ -26,14 +26,6 @@ export const usersPost = async(req = request, res = response) => {
     //Creating an instance of User
     const user  = new User({ name, email, password, role });
 
-    //Verify if the email exists and if its valid
-    const emailExists = await User.findOne({ email });
-    if( emailExists ){
-        return res.status(400).json({
-            msg: 'The email is already registered'
-        });
-    }
-
     //Encrypt the password
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync( password, salt );
