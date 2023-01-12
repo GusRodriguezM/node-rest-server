@@ -7,7 +7,7 @@ import { isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-valida
 
 export const router = Router();
 
-//GET request
+//GET API Route
 router.get( '/', usersGet );
 
 //POST API Route

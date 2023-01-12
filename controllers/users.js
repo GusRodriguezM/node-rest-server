@@ -3,18 +3,24 @@ import bcrypt from 'bcryptjs';
 
 import User from '../models/user.js';
 
-//GET request controller
-export const usersGet = (req = request, res = response) => {
+//GET API controller
+export const usersGet = async(req = request, res = response) => {
 
-    const { q, name = 'no name', apikey, page = 1, limit } = req.query;
+    const { limit = 5, from = 0 } = req.query;
+    const query = { status: true };
+
+    const [ total, users ] = await Promise.all([
+        User.countDocuments( query ),
+        User.find( query )
+            //To specify the number of registers to get
+            .skip( Number( from ) )
+            //Limit of registers to get from the DB
+            .limit( Number( limit ) )
+    ]);
 
     res.json({
-        msg: 'GET request - controller',
-        q,
-        name,
-        apikey,
-        page,
-        limit
+        total,
+        users
     });
 }
 
@@ -33,10 +39,7 @@ export const usersPost = async(req = request, res = response) => {
     //Saving the user into the DB
     await user.save();
 
-    res.json({
-        msg: 'POST request - controller',
-        user
-    });
+    res.json( user );
 }
 
 //PUT API controller
