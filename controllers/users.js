@@ -39,14 +39,24 @@ export const usersPost = async(req = request, res = response) => {
     });
 }
 
-//PUT request controller
-export const usersPut = (req = request, res = response) => {
+//PUT API controller
+export const usersPut = async(req = request, res = response) => {
 
     const { id } = req.params;
 
+    const { _id, password, google, email, ...rest } = req.body;
+
+    if( password ){
+        //Encrypt the password
+        const salt = bcrypt.genSaltSync();
+        rest.password = bcrypt.hashSync( password, salt );
+    }
+
+    const user = await User.findByIdAndUpdate( id, rest );
+    
     res.json({
         msg: 'PUT request - controller',
-        id
+        user
     });
 }
 
