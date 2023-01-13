@@ -27,8 +27,11 @@ router.put( '/:id', [
     validateFields
 ], usersPut );
 
-//DELETE request
-router.delete( '/', usersDelete );
+//DELETE API Route
+router.delete( '/:id', [
+    param( 'id' ).custom( userByIdExists ),
+    validateFields
+], usersDelete );
 
-//DELETE request
+//DELETE 2 API Route
 router.patch( '/', usersPatch );

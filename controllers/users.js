@@ -63,14 +63,17 @@ export const usersPut = async(req = request, res = response) => {
     });
 }
 
-//DELETE request controller
-export const usersDelete = (req, res = response) => {
-    res.json({
-        msg: 'DELETE request - controller'
-    });
+//DELETE API controller
+export const usersDelete = async(req = request, res = response) => {
+
+    const { id } = req.params;
+
+    const user = await User.findByIdAndUpdate( id, { status: false } );
+
+    res.json( user );
 }
 
-//PATCH request controller
+//PATCH API controller
 export const usersPatch = (req, res = response) => {
     res.json({
         msg: 'PATCH request - controller'
