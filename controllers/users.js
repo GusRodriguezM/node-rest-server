@@ -30,7 +30,7 @@ export const usersPost = async(req = request, res = response) => {
     const { name, email, password, role } = req.body;
 
     //Creating an instance of User
-    const user  = new User({ name, email, password, role });
+    const user = new User({ name, email, password, role });
 
     //Encrypt the password
     const salt = bcrypt.genSaltSync();
