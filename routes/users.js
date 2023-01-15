@@ -3,6 +3,7 @@ import { body, param } from 'express-validator';
 
 import { usersDelete, usersGet, usersPatch, usersPost, usersPut } from "../controllers/users.js";
 import { validateFields } from "../middlewares/fields-validator.js";
+import { validateJWT } from "../middlewares/validate-jwt.js";
 import { isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-validators.js";
 
 export const router = Router();
@@ -29,6 +30,7 @@ router.put( '/:id', [
 
 //DELETE API Route
 router.delete( '/:id', [
+    validateJWT,
     param( 'id' ).custom( userByIdExists ),
     validateFields
 ], usersDelete );
