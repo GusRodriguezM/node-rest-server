@@ -4,6 +4,7 @@ import { body, param } from 'express-validator';
 import { usersDelete, usersGet, usersPatch, usersPost, usersPut } from "../controllers/users.js";
 import { validateFields } from "../middlewares/fields-validator.js";
 import { validateJWT } from "../middlewares/validate-jwt.js";
+import { hasRole, isAdminRole } from "../middlewares/validate-roles.js";
 import { isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-validators.js";
 
 export const router = Router();
@@ -31,6 +32,9 @@ router.put( '/:id', [
 //DELETE API Route
 router.delete( '/:id', [
     validateJWT,
+    //This middleware checks that only the users with an ADMIN role can perform this action
+    isAdminRole,
+    // hasRole( 'ADMIN_ROLE', 'VENTAS_ROLE', 'SUPER_ROLE' ),
     param( 'id' ).custom( userByIdExists ),
     validateFields
 ], usersDelete );
