@@ -61,11 +61,37 @@ export const googleSignIn = async( req = request, res = response) => {
 
     try {
 
-        const googleUser = await googleVerify( id_token );
+        const { name, email, image } = await googleVerify( id_token );
+
+        let user = await User.findOne({ email });
+
+        //Create the user if does not exist
+        if( !user ){
+            const data = {
+                name,
+                email,
+                password: 'qwert',
+                image,
+                google: true
+            };
+
+            user = new User( data );
+            await user.save();
+        }
+
+        //If the status of the user in the DB then negate the access
+        if( !user.status ){
+            return res.status(401).json({
+                msg: 'Please talk with the admin. User is blocked!'
+            });
+        }
+
+        //Generate the JWT
+        const token = await generateJWT( user.id );
 
         res.json({
-            msg: 'id_token received',
-            id_token
+            user,
+            token
         });
         
     } catch (error) {
