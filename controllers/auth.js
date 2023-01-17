@@ -2,6 +2,7 @@ import { request, response } from "express";
 import User from "../models/user.js";
 import bcrypt from 'bcryptjs';
 import { generateJWT } from "../helpers/generate-jwt.js";
+import { googleVerify } from "../helpers/google-verify.js";
 
 export const login = async( req = request, res = response) => {
 
@@ -52,4 +53,26 @@ export const login = async( req = request, res = response) => {
 
     }
 
+}
+
+export const googleSignIn = async( req = request, res = response) => {
+
+    const { id_token } = req.body;
+
+    try {
+
+        const googleUser = await googleVerify( id_token );
+
+        res.json({
+            msg: 'id_token received',
+            id_token
+        });
+        
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            msg: 'The token could not be verified'
+        });
+    }
+    
 }
