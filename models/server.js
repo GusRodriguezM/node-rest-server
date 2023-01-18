@@ -1,17 +1,21 @@
 import express from 'express';
 import cors from 'cors';
-import { authRouter } from '../routes/auth.js';
-import { router } from '../routes/users.js';
 import { dbConnection } from '../database/config.js';
+import { authRouter } from '../routes/auth.js';
+import { categoriesRouter } from '../routes/categories.js';
+import { router } from '../routes/users.js';
 
 class Server {
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
-        
-        this.usersPath = '/api/users';
-        this.authPath = '/api/auth';
+
+        this.paths = {
+            authPath: '/api/auth',
+            categoriesPath: '/api/categories',
+            usersPath: '/api/users'
+        }
 
         //Connection to th DB
         this.connectionToDB();
@@ -40,8 +44,9 @@ class Server {
 
     //App routes
     routes() {
-        this.app.use( this.authPath, authRouter );
-        this.app.use( this.usersPath, router );
+        this.app.use( this.paths.authPath, authRouter );
+        this.app.use( this.paths.categoriesPath, categoriesRouter );
+        this.app.use( this.paths.usersPath, router );
     }
 
     //Port where the app will run
