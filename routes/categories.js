@@ -1,14 +1,12 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { createCategory } from "../controllers/categories.js";
+import { createCategory, getCategories } from "../controllers/categories.js";
 import { validateFields, validateJWT } from "../middlewares/index.js";
 
 export const categoriesRouter = Router();
 
 //Get all the categories - public
-categoriesRouter.get( '/', (req, res) => {
-    res.json('GET');
-} );
+categoriesRouter.get( '/', getCategories );
 
 //Get a category by id - public
 categoriesRouter.get( '/:id', (req, res) => {

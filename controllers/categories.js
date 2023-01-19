@@ -1,6 +1,27 @@
 import { request, response } from "express";
 import { Category } from '../models/index.js';
 
+//GET API controller - gets all the categories
+export const getCategories = async( req = request, res = response ) => {
+
+    const { limit = 5, from = 0 } = req.query;
+    const query = { status: true };
+
+    const [ total, categories ] = await Promise.all([
+        Category.countDocuments( query ),
+        Category.find( query )
+            .skip( Number( from ) )
+            .limit( Number( limit ) )
+    ]);
+
+    res.json({
+        total,
+        categories
+    });
+
+}
+
+//POST API Controller - creates a new category
 export const createCategory = async( req = request, res = response ) => {
 
     const name = req.body.name.toUpperCase();
