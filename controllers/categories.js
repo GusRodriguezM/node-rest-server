@@ -21,6 +21,16 @@ export const getCategories = async( req = request, res = response ) => {
 
 }
 
+export const getCategoryById = async( req = request, res = response ) => {
+
+    const { id } = req.params;
+
+    const category = await Category.findById( id );
+
+    res.json( category );
+
+}
+
 //POST API Controller - creates a new category
 export const createCategory = async( req = request, res = response ) => {
 

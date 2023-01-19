@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import Role from '../models/role.js';
-import User from '../models/user.js';
+import { Category, Role, User } from '../models/index.js';
 
 //Verify if the role sent by the user is a valid value compared to the DB
 export const isValidRole = async( role = '') => {
@@ -27,6 +26,23 @@ export const userByIdExists = async( id ) => {
         if( !userExists ){
             throw new Error(`The id ${id} does not exist in the database`);
         }
+    }else{
+        throw new Error(`The id ${id} is not valid`);
+    }
+
+}
+
+//Checks if the category exist (by the id) in the DB
+export const existCategory = async( id ) => {
+
+    if( mongoose.Types.ObjectId.isValid( id ) ){
+
+        const categoryExist = await Category.findById( id );
+
+        if( !categoryExist ){
+            throw new Error(`The id ${id} does not exist in the database`);
+        }
+
     }else{
         throw new Error(`The id ${id} is not valid`);
     }

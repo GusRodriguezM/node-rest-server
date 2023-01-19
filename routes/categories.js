@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { body } from "express-validator";
-import { createCategory, getCategories } from "../controllers/categories.js";
+import { body, param } from "express-validator";
+import { createCategory, getCategories, getCategoryById } from "../controllers/categories.js";
+import { existCategory } from "../helpers/db-validators.js";
 import { validateFields, validateJWT } from "../middlewares/index.js";
 
 export const categoriesRouter = Router();
@@ -9,9 +10,10 @@ export const categoriesRouter = Router();
 categoriesRouter.get( '/', getCategories );
 
 //Get a category by id - public
-categoriesRouter.get( '/:id', (req, res) => {
-    res.json('GET by id');
-} );
+categoriesRouter.get( '/:id', [
+    param( 'id' ).custom( existCategory ),
+    validateFields
+], getCategoryById );
 
 //Create a category - private with any role
 categoriesRouter.post( '/', [
