@@ -7,6 +7,10 @@ export const getCategories = async( req = request, res = response ) => {
     const { limit = 5, from = 0 } = req.query;
     const query = { status: true };
 
+    /**
+     * Waits for the promises to be resolved and gets the total number of documents
+     * Gets all the documents that has the status equals true
+     */
     const [ total, categories ] = await Promise.all([
         Category.countDocuments( query ),
         Category.find( query )
@@ -21,6 +25,7 @@ export const getCategories = async( req = request, res = response ) => {
 
 }
 
+//GET API controller - get a category by it's id
 export const getCategoryById = async( req = request, res = response ) => {
 
     const { id } = req.params;
@@ -38,7 +43,7 @@ export const createCategory = async( req = request, res = response ) => {
 
     const categoryDB = await Category.findOne( { name } );
 
-    //Searchs in the database for any other category with the same data
+    //Searches in the database for any other category with the same data
     if( categoryDB ){
         return res.status(400).json({
             msg: `The category ${categoryDB.name} already exists`
@@ -55,6 +60,24 @@ export const createCategory = async( req = request, res = response ) => {
     const category = new Category( data );
 
     await category.save();
+
+    res.json( category );
+
+}
+
+//Updates a category if exists
+export const updateCategory = async( req = request, res = response ) => {
+
+    const { id } = req.params;
+
+    //Extracting the user and the status from the request, we left only the name of the category
+    const { status, user, ...data } = req.body;
+
+    data.name = data.name.toUpperCase();
+    data.user = req.user._id;
+
+    //Updating the category by sending the name and the user id, it returns the object updated
+    const category = await Category.findByIdAndUpdate( id, data, { new: true } );
 
     res.json( category );
 

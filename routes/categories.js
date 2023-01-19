@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { createCategory, getCategories, getCategoryById } from "../controllers/categories.js";
+import { createCategory, getCategories, getCategoryById, updateCategory } from "../controllers/categories.js";
 import { existCategory } from "../helpers/db-validators.js";
 import { validateFields, validateJWT } from "../middlewares/index.js";
 
@@ -23,9 +23,12 @@ categoriesRouter.post( '/', [
 ], createCategory );
 
 //Update a category by id - private anyone with a valid token
-categoriesRouter.put( '/:id', (req, res) => {
-    res.json('PUT');
-} );
+categoriesRouter.put( '/:id', [
+    validateJWT,
+    param( 'id' ).custom( existCategory ),
+    body( 'name', 'The name is required' ).not().isEmpty(),
+    validateFields
+], updateCategory );
 
 //Delete a category by id - private, only the users with the ADMIN role
 categoriesRouter.delete( '/:id', (req, res) => {
