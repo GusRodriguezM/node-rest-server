@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { validateFields } from "../middlewares/fields-validator.js";
+import { body } from "express-validator";
+import { createCategory } from "../controllers/categories.js";
+import { validateFields, validateJWT } from "../middlewares/index.js";
 
 export const categoriesRouter = Router();
 
@@ -14,9 +16,11 @@ categoriesRouter.get( '/:id', (req, res) => {
 } );
 
 //Create a category - private with any role
-categoriesRouter.post( '/', (req, res) => {
-    res.json('POST');
-} );
+categoriesRouter.post( '/', [
+    validateJWT,
+    body( 'name', 'The name of the category is required' ).not().isEmpty(),
+    validateFields
+], createCategory );
 
 //Update a category by id - private anyone with a valid token
 categoriesRouter.put( '/:id', (req, res) => {
