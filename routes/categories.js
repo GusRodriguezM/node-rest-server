@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { createCategory, getCategories, getCategoryById, updateCategory } from "../controllers/categories.js";
-import { existCategory } from "../helpers/db-validators.js";
-import { validateFields, validateJWT } from "../middlewares/index.js";
+import { createCategory, deleteCategory, getCategories, getCategoryById, updateCategory } from "../controllers/categories.js";
+import { existCategory, isValidRole } from "../helpers/db-validators.js";
+import { isAdminRole, validateFields, validateJWT } from "../middlewares/index.js";
 
 export const categoriesRouter = Router();
 
@@ -31,6 +31,9 @@ categoriesRouter.put( '/:id', [
 ], updateCategory );
 
 //Delete a category by id - private, only the users with the ADMIN role
-categoriesRouter.delete( '/:id', (req, res) => {
-    res.json('DELETE');
-} );
+categoriesRouter.delete( '/:id', [
+    validateJWT,
+    isAdminRole,
+    param( 'id' ).custom( existCategory ),
+    validateFields
+], deleteCategory);

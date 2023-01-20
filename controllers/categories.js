@@ -82,3 +82,15 @@ export const updateCategory = async( req = request, res = response ) => {
     res.json( category );
 
 }
+
+//Deletes a category by the id
+export const deleteCategory = async( req = request, res = response ) => {
+
+    const { id } = req.params;
+
+    //The object with the new property makes that the function returns the updated mongo register
+    const deletedCategory = await Category.findByIdAndUpdate( id, { status: false }, { new: true } );
+
+    res.json( deletedCategory );
+
+}
