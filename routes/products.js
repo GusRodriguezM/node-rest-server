@@ -4,20 +4,19 @@ import { body, param } from 'express-validator';
 import { validateFields, validateJWT, isAdminRole, hasRole } from '../middlewares/index.js';
 
 import { existCategory, isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-validators.js";
-import { createProduct } from "../controllers/products.js";
+import { createProduct, getProducts } from "../controllers/products.js";
 
 export const productsRouter = Router();
 
-productsRouter.get( '/', (req, res) => {
-    res.json('Get');
-} );
+//Get all products - route for any user
+productsRouter.get( '/', getProducts );
 
 productsRouter.get( '/:id', (req, res) => {
     res.json('Get - id');
 } );
 
-//Creates a new product
 /**
+ * Creates a new product
  * Only for users with a valid token, checks if the category exist in the DB
  */
 productsRouter.post( '/', [

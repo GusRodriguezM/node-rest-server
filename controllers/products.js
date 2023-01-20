@@ -1,10 +1,37 @@
 import { request, response } from "express";
 import { Product } from "../models/index.js";
 
+//GET API Controller - gets all the products
+export const getProducts = async( req = request, res = response ) => {
 
-export const getProducts = async( req = request, res = response ) => {}
+    const { limit = 5, from = 0 } = req.query;
+    const query = { status: true };
+
+    /**
+     * Returns the total number of documents and all the products in a list if status = true
+     */
+    const [ total, products ] = await Promise.all([
+        Product.countDocuments( query ),
+        Product.find( query )
+            //returns the object referenced by its id - user
+            .populate( 'user', 'name' )
+            //returns the object referenced by its id - category
+            .populate( 'category', 'name' )
+            .skip( Number( from ) )
+            .limit( Number( limit) )
+    ]);
+
+    res.json({
+        total,
+        products
+    })
+
+}
+
+
 export const getProductById = async( req = request, res = response ) => {}
 
+//POST API Controller - creates a new product
 export const createProduct = async( req = request, res = response ) => {
 
     const { status, user, ...body } = req.body;
