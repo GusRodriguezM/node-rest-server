@@ -14,6 +14,8 @@ export const getCategories = async( req = request, res = response ) => {
     const [ total, categories ] = await Promise.all([
         Category.countDocuments( query ),
         Category.find( query )
+            //populate returns the object referenced by its id
+            .populate( 'user', 'name' )
             .skip( Number( from ) )
             .limit( Number( limit ) )
     ]);
@@ -30,7 +32,7 @@ export const getCategoryById = async( req = request, res = response ) => {
 
     const { id } = req.params;
 
-    const category = await Category.findById( id );
+    const category = await Category.findById( id ).populate( 'user', 'name' );
 
     res.json( category );
 
