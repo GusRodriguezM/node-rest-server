@@ -4,7 +4,7 @@ import { body, param } from 'express-validator';
 import { validateFields, validateJWT, isAdminRole, hasRole } from '../middlewares/index.js';
 
 import { existCategory, existProduct, isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-validators.js";
-import { createProduct, getProductById, getProducts } from "../controllers/products.js";
+import { createProduct, getProductById, getProducts, updateProduct } from "../controllers/products.js";
 
 export const productsRouter = Router();
 
@@ -28,10 +28,12 @@ productsRouter.post( '/', [
     validateFields
 ], createProduct );
 
-
-productsRouter.put( '/:id',  (req, res) => {
-    res.json('Put');
-} );
+//Update a category by id - only for users with a valid token
+productsRouter.put( '/:id', [
+    validateJWT,
+    param( 'id' ).custom( existProduct ),
+    validateFields
+], updateProduct );
 
 
 productsRouter.delete( '/:id',  (req, res) => {

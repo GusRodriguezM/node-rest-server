@@ -73,6 +73,25 @@ export const createProduct = async( req = request, res = response ) => {
 
 }
 
+//Updates a product if exists
+export const updateProduct = async( req = request, res = response ) => {
 
-export const updateProduct = async( req = request, res = response ) => {}
+    const { id } = req.params;
+
+    const { status, user, ...data } = req.body;
+
+    if( data.name ){
+        data.name = data.name.toUpperCase();
+    }
+
+    data.user = req.user._id;
+
+    //Updating only the properties that came in the request
+    const product = await Product.findByIdAndUpdate( id, data, { new: true } );
+
+    res.json( product );
+
+}
+
+
 export const deleteProduct = async( req = request, res = response ) => {}
