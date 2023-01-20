@@ -93,5 +93,14 @@ export const updateProduct = async( req = request, res = response ) => {
 
 }
 
+//Deletes a product by the id
+export const deleteProduct = async( req = request, res = response ) => {
 
-export const deleteProduct = async( req = request, res = response ) => {}
+    const { id } = req.params;
+
+    //The object with the new property makes that the function returns the updated mongo register
+    const deletedProduct = await Product.findByIdAndUpdate( id, { status: false }, { new: true } );
+
+    res.json( deletedProduct );
+
+}

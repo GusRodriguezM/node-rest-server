@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { createCategory, deleteCategory, getCategories, getCategoryById, updateCategory } from "../controllers/categories.js";
-import { existCategory, isValidRole } from "../helpers/db-validators.js";
+import { existCategory } from "../helpers/db-validators.js";
 import { isAdminRole, validateFields, validateJWT } from "../middlewares/index.js";
 
 export const categoriesRouter = Router();
