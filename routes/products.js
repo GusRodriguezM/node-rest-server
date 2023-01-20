@@ -3,17 +3,19 @@ import { body, param } from 'express-validator';
 
 import { validateFields, validateJWT, isAdminRole, hasRole } from '../middlewares/index.js';
 
-import { existCategory, isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-validators.js";
-import { createProduct, getProducts } from "../controllers/products.js";
+import { existCategory, existProduct, isValidEmail, isValidRole, userByIdExists  } from "../helpers/db-validators.js";
+import { createProduct, getProductById, getProducts } from "../controllers/products.js";
 
 export const productsRouter = Router();
 
 //Get all products - route for any user
 productsRouter.get( '/', getProducts );
 
-productsRouter.get( '/:id', (req, res) => {
-    res.json('Get - id');
-} );
+//Gets a product by its id - route for any user
+productsRouter.get( '/:id', [
+    param( 'id' ).custom( existProduct ),
+    validateFields
+], getProductById );
 
 /**
  * Creates a new product

@@ -28,8 +28,19 @@ export const getProducts = async( req = request, res = response ) => {
 
 }
 
+//GET API controller - get a category by its id
+export const getProductById = async( req = request, res = response ) => {
 
-export const getProductById = async( req = request, res = response ) => {}
+    const { id } = req.params;
+
+    //Returns the product with the reference of the user and the category
+    const product = await Product.findById( id )
+                            .populate( 'user', 'name' )
+                            .populate( 'category', 'name' );
+
+    res.json( product );
+
+}
 
 //POST API Controller - creates a new product
 export const createProduct = async( req = request, res = response ) => {

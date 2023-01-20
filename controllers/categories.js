@@ -27,7 +27,7 @@ export const getCategories = async( req = request, res = response ) => {
 
 }
 
-//GET API controller - get a category by it's id
+//GET API controller - get a category by its id
 export const getCategoryById = async( req = request, res = response ) => {
 
     const { id } = req.params;

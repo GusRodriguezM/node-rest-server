@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Category, Role, User } from '../models/index.js';
+import { Category, Product, Role, User } from '../models/index.js';
 
 //Verify if the role sent by the user is a valid value compared to the DB
 export const isValidRole = async( role = '') => {
@@ -40,6 +40,23 @@ export const existCategory = async( id ) => {
         const categoryExist = await Category.findById( id );
 
         if( !categoryExist ){
+            throw new Error(`The id ${id} does not exist in the database`);
+        }
+
+    }else{
+        throw new Error(`The id ${id} is not valid`);
+    }
+
+}
+
+//Checks if the product exist (by the id) in the DB
+export const existProduct = async( id ) => {
+
+    if( mongoose.Types.ObjectId.isValid( id ) ){
+
+        const productExist = await Product.findById( id );
+
+        if( !productExist ){
             throw new Error(`The id ${id} does not exist in the database`);
         }
 
