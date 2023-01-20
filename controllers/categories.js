@@ -63,7 +63,7 @@ export const createCategory = async( req = request, res = response ) => {
 
     await category.save();
 
-    res.json( category );
+    res.status(201).json( category );
 
 }
 
