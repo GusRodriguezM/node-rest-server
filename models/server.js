@@ -5,6 +5,7 @@ import { authRouter } from '../routes/auth.js';
 import { categoriesRouter } from '../routes/categories.js';
 import { router } from '../routes/users.js';
 import { productsRouter } from '../routes/products.js';
+import { searchRouter } from '../routes/search.js';
 
 class Server {
 
@@ -16,6 +17,7 @@ class Server {
             authPath: '/api/auth',
             categoriesPath: '/api/categories',
             productsPath: '/api/products',
+            searchPath: '/api/search',
             usersPath: '/api/users'
         }
 
@@ -49,6 +51,7 @@ class Server {
         this.app.use( this.paths.authPath, authRouter );
         this.app.use( this.paths.categoriesPath, categoriesRouter );
         this.app.use( this.paths.productsPath, productsRouter );
+        this.app.use( this.paths.searchPath, searchRouter );
         this.app.use( this.paths.usersPath, router );
     }
 
