@@ -1,6 +1,6 @@
 import { request, response } from "express";
 import { Types } from "mongoose";
-import { User } from "../models/index.js";
+import { Category, User } from "../models/index.js";
 
 //The name of the collections in the DB
 const collections = [
@@ -23,6 +23,7 @@ export const search = ( req = request, res = response) => {
 
     switch ( collection ) {
         case collections[0]:
+            searchCategory( searchTerm, res );
             break;
         case collections[1]:
             break;
@@ -85,4 +86,37 @@ const searchUsers = async( searchTerm = '', res = response) => {
         total,
         results: users
     });
+}
+
+const searchCategory = async( searchTerm = '', res = response ) => {
+
+    const { ObjectId } = Types;
+    const isMongoId = ObjectId.isValid( searchTerm );
+
+    if( isMongoId ){
+        const category = await Category.findById( searchTerm );
+
+        return res.json({
+            results: ( category ) ? [ category ] : []
+        });
+    }
+
+    const regexp = new RegExp( searchTerm, 'i' );
+
+    const name = regexp;
+    const status = true;
+
+    //Waiting for the response of both promises
+    const [ total, categories ] = await Promise.all([
+        //Counting the results based on the name and the status equals true
+        Category.countDocuments( { name, status } ),
+        Category.find( { name, status } )
+    ]);
+
+    //Returns an array of categories that matches with the search term and the total of results
+    res.json({
+        total,
+        results: categories
+    });
+
 }
