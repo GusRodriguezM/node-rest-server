@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import fileUpload from 'express-fileupload'
 import { dbConnection } from '../database/config.js';
 import { authRouter } from '../routes/auth.js';
 import { categoriesRouter } from '../routes/categories.js';
@@ -46,6 +47,12 @@ class Server {
 
         //Public folder
         this.app.use( express.static('public') );
+
+        //File upload
+        this.app.use( fileUpload({
+            useTempFiles: true,
+            tempFileDir: '/tmp/'
+        }));
     }
 
     //App routes
