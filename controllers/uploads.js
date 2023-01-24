@@ -12,18 +12,36 @@ export const uploadFiles = ( req = request, res = response) => {
         });
         return;
     }
-
+    
     const { file } = req.files;
 
-    const uploadPath = path.join( __dirname, '../uploads/', file.name);
-
-    file.mv( uploadPath, (err) => {
+    //Splitting the file name into elemetens of an array
+    const shortName = file.name.split('.');
     
-        if ( err ) {
-            return res.status(500).json({ err });
-        }
+    //Getting the extension of the file
+    const extension = shortName[ shortName.length - 1 ];
 
-        res.json( { msg: 'File uploaded to ' + uploadPath } );
+    //Comparing the extension against an allowed list of extensions
+    const validExtensions = [ 'png', 'jpg', 'jpeg', 'gif' ];
 
-    });
+    if( !validExtensions.includes( extension ) ){
+        return res.status(400).json({
+            msg: `The extension ${extension} is not allowed. The allowed extensions are ${validExtensions}`
+        });
+    }
+    
+    res.json({ msg: `${extension}` });
+
+
+    // const uploadPath = path.join( __dirname, '../uploads/', file.name);
+
+    // file.mv( uploadPath, (err) => {
+    
+    //     if ( err ) {
+    //         return res.status(500).json({ err });
+    //     }
+
+    //     res.json( { msg: 'File uploaded to ' + uploadPath } );
+
+    // });
 }
