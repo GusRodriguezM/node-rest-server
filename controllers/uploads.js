@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
 import { request, response } from "express";
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
@@ -29,19 +30,17 @@ export const uploadFiles = ( req = request, res = response) => {
             msg: `The extension ${extension} is not allowed. The allowed extensions are ${validExtensions}`
         });
     }
+
+    const tempName = uuidv4() + '.' + extension;
+    const uploadPath = path.join( __dirname, '../uploads/', tempName );
+
+    file.mv( uploadPath, (err) => {
     
-    res.json({ msg: `${extension}` });
+        if ( err ) {
+            return res.status(500).json({ err });
+        }
 
+        res.json( { msg: 'File uploaded to ' + uploadPath } );
 
-    // const uploadPath = path.join( __dirname, '../uploads/', file.name);
-
-    // file.mv( uploadPath, (err) => {
-    
-    //     if ( err ) {
-    //         return res.status(500).json({ err });
-    //     }
-
-    //     res.json( { msg: 'File uploaded to ' + uploadPath } );
-
-    // });
+    });
 }
