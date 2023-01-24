@@ -58,7 +58,7 @@ class Server {
     //Port where the app will run
     listen() {
         this.app.listen(this.port, () => {
-            console.log(`Example app listening on port, ${this.port}`);
+            console.log(`The server is up and listening on port, ${this.port}`);
         });
     }
 

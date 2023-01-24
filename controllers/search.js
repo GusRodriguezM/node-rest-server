@@ -1,6 +1,6 @@
 import { request, response } from "express";
 import { Types } from "mongoose";
-import { Category, User } from "../models/index.js";
+import { Category, Product, User } from "../models/index.js";
 
 //The name of the collections in the DB
 const collections = [
@@ -10,6 +10,7 @@ const collections = [
     'users'
 ];
 
+//Main function for all the searches
 export const search = ( req = request, res = response) => {
 
     const { collection, searchTerm } = req.params;
@@ -22,10 +23,12 @@ export const search = ( req = request, res = response) => {
     }
 
     switch ( collection ) {
+
         case collections[0]:
-            searchCategory( searchTerm, res );
+            searchCategories( searchTerm, res );
             break;
         case collections[1]:
+            searchProducts( searchTerm, res );
             break;
         case collections[3]:
             searchUsers( searchTerm, res );
@@ -88,7 +91,8 @@ const searchUsers = async( searchTerm = '', res = response) => {
     });
 }
 
-const searchCategory = async( searchTerm = '', res = response ) => {
+//Function to search a category by the name or the id
+const searchCategories = async( searchTerm = '', res = response ) => {
 
     const { ObjectId } = Types;
     const isMongoId = ObjectId.isValid( searchTerm );
@@ -118,5 +122,40 @@ const searchCategory = async( searchTerm = '', res = response ) => {
         total,
         results: categories
     });
+
+}
+
+//Function to search products by the name or the id
+const searchProducts = async( searchTerm = '', res = response) => {
+
+    const { ObjectId } = Types;
+    const isMongoId = ObjectId.isValid( searchTerm );
+
+    if( isMongoId ){
+        const product = await Product.findById( searchTerm ).populate( 'category', 'name' );
+
+        return res.json({
+            results: ( product ) ? [ product ] : []
+        });
+    }
+
+    const regexp = new RegExp( searchTerm, 'i' );
+
+    const name = regexp;
+    const status = true;
+
+    //Waiting for the response of both promises
+    const [ total, products ] = await Promise.all([
+        //Counting the results based on the name and the status equals true. We also see their respective category
+        Product.countDocuments( { name, status } ),
+        Product.find( { name, status } ).populate( 'category', 'name' )
+    ]);
+
+    //Returns an array of products that matches with the search term and the total of results
+    res.json({
+        total,
+        results: products
+    });
+
 
 }
