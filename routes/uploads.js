@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from 'express-validator';
-import { updateImage, uploadFiles } from "../controllers/uploads.js";
+import { showImage, updateImage, uploadFiles } from "../controllers/uploads.js";
 import { allowedCollections } from "../helpers/index.js";
 import { validateFields, validateFileToUpload } from "../middlewares/index.js";
 
@@ -17,3 +17,10 @@ uploadFilesRouter.put('/:collection/:id', [
     param( 'collection' ).custom( c => allowedCollections( c, ['users', 'products'] ) ),
     validateFields
 ], updateImage );
+
+//GET API Route to get the image of the user or product
+uploadFilesRouter.get( '/:collection/:id', [
+    param( 'id', 'The id is not valid' ).isMongoId(),
+    param( 'collection' ).custom( c => allowedCollections( c, ['users', 'products'] ) ),
+    validateFields
+], showImage );

@@ -85,3 +85,53 @@ export const updateImage = async( req = request, res = response ) => {
     res.json( model );
 
 }
+
+//Controller to show a default image in case where a user or a product does not have one
+export const showImage = async( req = request, res = response ) => {
+
+    const { id, collection } = req.params;
+
+    let model;
+
+    /**
+     * Switch to control the option (collection)
+     * First we search an user or a product by the id, if exists we save the result in a variable otherwise we return an error
+     */
+    switch ( collection ) {
+        case 'users':
+            model = await User.findById( id );
+            if( !model ){
+                return res.status(400).json({ msg: `Does not exist a user with the id ${id}` });
+            }
+
+            break;
+        
+        case 'products':
+            model = await Product.findById( id );
+            if( !model ){
+                return res.status(400).json({ msg: `There is no a product with the id ${id}`});
+            }
+            break;
+    
+        default:
+            res.status(500).json({ msg: 'Option not valid' });
+            break;
+    }
+
+    if( model.image ){
+        //We get the path of the image in the server depending on the collection if exists
+        const imagePath = path.join( __dirname, '../uploads', collection, model.image );
+
+        //If the image exists then we send it in the response
+        if( existsSync( imagePath ) ){
+            return res.sendFile( imagePath );
+        }
+    }
+
+    //Getting the path of the default image
+    const defaultImage = path.join( __dirname, '../assets/no-image.jpg' );
+
+    //We send a default image when the product or user we look for does not have one
+    res.sendFile( defaultImage );
+
+}
