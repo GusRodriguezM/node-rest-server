@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from 'express-validator';
-import { updateUserImage, uploadFiles } from "../controllers/uploads.js";
+import { updateImage, uploadFiles } from "../controllers/uploads.js";
 import { allowedCollections } from "../helpers/index.js";
 import { validateFields } from "../middlewares/index.js";
 
@@ -15,4 +15,4 @@ uploadFilesRouter.put('/:collection/:id', [
     //Using a callback to receive the collection and the list of allowed collections
     param( 'collection' ).custom( c => allowedCollections( c, ['users', 'products'] ) ),
     validateFields
-],updateUserImage );
+], updateImage );
