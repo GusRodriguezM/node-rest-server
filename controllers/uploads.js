@@ -29,3 +29,11 @@ export const uploadFiles = async( req = request, res = response) => {
     }
     
 }
+
+export const updateUserImage = async( req = request, res = response ) => {
+
+    const { id, collection } = req.params;
+
+    res.json({ id, collection });
+
+}

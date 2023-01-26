@@ -65,3 +65,16 @@ export const existProduct = async( id ) => {
     }
 
 }
+
+//Validate allowed collections
+export const allowedCollections = ( collection = '', collections = [] ) => {
+
+    const validCollection = collections.includes( collection );
+
+    if( !validCollection ){
+        throw new Error( `The collection ${collection} is not allowed. The allowed collections are ${collections}` );
+    }
+
+    return true;
+
+}
