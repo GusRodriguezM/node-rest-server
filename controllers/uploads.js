@@ -1,6 +1,12 @@
+import path from 'path';
+import { existsSync, unlinkSync } from 'fs';
+import { fileURLToPath } from 'url';
+
 import { request, response } from "express";
 import { uploadFile } from "../helpers/index.js";
 import { Product, User } from "../models/index.js";
+
+const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 
 //Controller to upload files to the server
 export const uploadFiles = async( req = request, res = response) => {
@@ -54,6 +60,17 @@ export const updateImage = async( req = request, res = response ) => {
         default:
             res.status(500).json({ msg: 'Option not valid' });
             break;
+    }
+
+    //Delete previous images
+    if( model.image ){
+        //We get the path of the image in the server depending on the collection
+        const imagePath = path.join( __dirname, '../uploads', collection, model.image );
+
+        //If the image exists then we delete it
+        if( existsSync( imagePath ) ){
+            unlinkSync( imagePath );
+        }
     }
 
     //Uploading the image from the request in the folder specified by the name of the collection
