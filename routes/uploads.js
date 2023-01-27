@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from 'express-validator';
-import { showImage, updateImage, uploadFiles } from "../controllers/uploads.js";
+import { showImage, updateImageCloudinary, uploadFiles } from "../controllers/uploads.js";
 import { allowedCollections } from "../helpers/index.js";
 import { validateFields, validateFileToUpload } from "../middlewares/index.js";
 
@@ -16,7 +16,9 @@ uploadFilesRouter.put('/:collection/:id', [
     //Using a callback to receive the collection and the list of allowed collections
     param( 'collection' ).custom( c => allowedCollections( c, ['users', 'products'] ) ),
     validateFields
-], updateImage );
+], updateImageCloudinary );
+// Uncomment the line below to use the update of the image locally (in the same server)
+// ], updateImage );
 
 //GET API Route to get the image of the user or product
 uploadFilesRouter.get( '/:collection/:id', [
