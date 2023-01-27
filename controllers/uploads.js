@@ -199,6 +199,11 @@ export const showImage = async( req = request, res = response ) => {
         }
     }
 
+    //Uncomment the lines below to get the image from the database and redirect them to the specific url of cloudinary
+    // if( model.image ){
+    //     return res.redirect( model.image );
+    // }
+
     //Getting the path of the default image
     const defaultImage = path.join( __dirname, '../assets/no-image.jpg' );
 
